@@ -137,7 +137,57 @@ def apply_stemming(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------
-# 4. Final Cleanup
+# 4. Class-Imbalance Helpers
+# ---------------------------------------------------------------------------
+
+def undersample_majority(
+    df: pd.DataFrame,
+    majority_label: str = "Positif",
+    n: int = 200,
+    random_state: int = 42,
+) -> pd.DataFrame:
+    """
+    Keep ALL minority-class rows; randomly sample n rows from the majority class.
+    Useful when Positif >> Negatif+Netral.
+    """
+    df_maj = df[df["sentiment_label"] == majority_label]
+    df_min = df[df["sentiment_label"] != majority_label]
+
+    n_actual = min(n, len(df_maj))
+    df_maj_sampled = df_maj.sample(n=n_actual, random_state=random_state)
+
+    result = (
+        pd.concat([df_maj_sampled, df_min], ignore_index=True)
+        .sample(frac=1, random_state=random_state)
+        .reset_index(drop=True)
+    )
+    print(
+        f"  [undersample] {majority_label}: {len(df_maj)} → {n_actual}  "
+        f"| minority kept: {len(df_min)}  "
+        f"| total: {len(result)}"
+    )
+    return result
+
+
+def add_binary_label(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Add a `binary_label` column pooling Negatif + Netral → 'Non-Positif'.
+    Original `sentiment_label` (3-class) is preserved.
+    """
+    df = df.copy()
+    df["binary_label"] = df["sentiment_label"].apply(
+        lambda x: "Positif" if x == "Positif" else "Non-Positif"
+    )
+    dist = df["binary_label"].value_counts()
+    print(
+        f"  [binary_label] Positif={dist.get('Positif', 0)}  "
+        f"Non-Positif={dist.get('Non-Positif', 0)}"
+    )
+    return df
+
+
+# ---------------------------------------------------------------------------
+# 5. Final Cleanup
 # ---------------------------------------------------------------------------
 
 def drop_unused_columns(df: pd.DataFrame) -> pd.DataFrame:
@@ -149,7 +199,7 @@ def drop_unused_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------
-# 5. Master Pipeline
+# 6. Master Pipelines
 # ---------------------------------------------------------------------------
 
 def run_cleaning_pipeline(input_path: str, output_path: str,
@@ -184,4 +234,41 @@ def run_cleaning_pipeline(input_path: str, output_path: str,
     print(f"Saved → {output_path}")
     print("=" * 50)
 
+    return df
+
+
+def run_balanced_pipeline(
+    clean_csv: str,
+    output_path: str,
+    majority_label: str = "Positif",
+    n_majority: int = 200,
+    random_state: int = 42,
+    add_binary: bool = True,
+) -> pd.DataFrame:
+    """
+    Post-cleaning balancing pipeline.
+    Reads an already-cleaned CSV, undersamples the majority class, and
+    optionally adds a binary_label column.
+
+    Saves result to output_path.
+    """
+    print("=" * 50)
+    print("BALANCING PIPELINE")
+    print("=" * 50)
+
+    df = pd.read_csv(clean_csv)
+    print(f"Loaded  : {len(df)} rows")
+    print("Before:")
+    print(df["sentiment_label"].value_counts().to_string())
+    print("-" * 50)
+
+    df = undersample_majority(df, majority_label=majority_label, n=n_majority, random_state=random_state)
+
+    if add_binary:
+        df = add_binary_label(df)
+
+    df.to_csv(output_path, index=False, encoding="utf-8")
+    print("-" * 50)
+    print(f"Saved → {output_path}  ({len(df)} rows)")
+    print("=" * 50)
     return df

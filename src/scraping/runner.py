@@ -121,7 +121,7 @@ def navigate_to_review_page(page, url: str) -> bool:
         return False
 
 
-def extract_reviews_from_page(page, product: dict, seen_ids: set) -> list:
+def extract_reviews_from_page(page, product: dict, seen_ids: set, target_ratings: set = None) -> list:
     """Extract reviews from current page view."""
     reviews = []
     
@@ -129,7 +129,7 @@ def extract_reviews_from_page(page, product: dict, seen_ids: set) -> list:
     
     for article in articles:
         try:
-            review = extract_single_review(article, product)
+            review = extract_single_review(article, product, target_ratings=target_ratings)
             if review and review.get("review_text"):
                 # Skip duplicates
                 if review["review_id"] not in seen_ids:
@@ -141,7 +141,7 @@ def extract_reviews_from_page(page, product: dict, seen_ids: set) -> list:
     return reviews
 
 
-def extract_single_review(article, product: dict) -> dict:
+def extract_single_review(article, product: dict, target_ratings: set = None) -> dict:
     """Extract data from a single article."""
     try:
         # Review text - MOST IMPORTANT for sentiment classification
@@ -171,15 +171,43 @@ def extract_single_review(article, product: dict) -> dict:
             except:
                 continue
         
-        # Rating (count stars)
-        rating = 5
+        # Rating: never fallback to 5; skip review if rating cannot be extracted.
+        rating = None
         try:
+            # Most reliable selector on Tokopedia review card.
             stars = article.query_selector_all('[data-testid="icnStarScore"]')
-            if stars:
+            if stars and 1 <= len(stars) <= 5:
                 rating = len(stars)
+
+            # Fallback parse from rating containers / aria labels.
+            if rating is None:
+                rating_nodes = article.query_selector_all(
+                    '[data-testid*="rating"], [aria-label*="bintang" i], [aria-label*="star" i], [class*="rating"]'
+                )
+                for node in rating_nodes:
+                    try:
+                        aria = node.get_attribute('aria-label') or ''
+                        txt = node.inner_text() or ''
+                        combined = f"{aria} {txt}".strip()
+                        match = re.search(r'(\d+)', combined)
+                        if not match:
+                            continue
+                        val = int(match.group(1))
+                        if 1 <= val <= 5:
+                            rating = val
+                            break
+                    except:
+                        continue
         except:
             pass
+
+        if rating is None:
+            return None
         
+        # Optional rating filter for targeted scraping (e.g., only 1-3 stars)
+        if target_ratings and rating not in target_ratings:
+            return None
+
         # Variant
         variant = None
         try:
@@ -222,7 +250,7 @@ def extract_single_review(article, product: dict) -> dict:
         return None
 
 
-def scrape_all_reviews_with_pagination(page, product: dict, max_reviews: int = 500) -> list:
+def scrape_all_reviews_with_pagination(page, product: dict, max_reviews: int = 500, target_ratings: set = None) -> list:
     """Scrape all reviews using pagination with correct selectors."""
     all_reviews = []
     seen_ids = set()
@@ -235,7 +263,7 @@ def scrape_all_reviews_with_pagination(page, product: dict, max_reviews: int = 5
         time.sleep(0.5)
         
         # Extract reviews from current page
-        reviews = extract_reviews_from_page(page, product, seen_ids)
+        reviews = extract_reviews_from_page(page, product, seen_ids, target_ratings=target_ratings)
         new_count = len(reviews)
         all_reviews.extend(reviews)
         
@@ -243,10 +271,18 @@ def scrape_all_reviews_with_pagination(page, product: dict, max_reviews: int = 5
             print(f"  📄 Page {current_page}: +{new_count} reviews (total: {len(all_reviews)})", file=sys.stderr)
             no_new_reviews_count = 0
         else:
-            no_new_reviews_count += 1
-            if no_new_reviews_count >= 2:
-                print(f"  📊 No new reviews found for 2 pages, stopping", file=sys.stderr)
-                break
+            # If filtering by target ratings, keep paginating because
+            # early pages may not contain the desired stars.
+            if target_ratings:
+                print(
+                    f"  📄 Page {current_page}: +0 reviews after rating filter {sorted(target_ratings)}",
+                    file=sys.stderr,
+                )
+            else:
+                no_new_reviews_count += 1
+                if no_new_reviews_count >= 2:
+                    print(f"  📊 No new reviews found for 2 pages, stopping", file=sys.stderr)
+                    break
         
         # Scroll to bottom to find pagination
         page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
@@ -299,7 +335,7 @@ def scrape_all_reviews_with_pagination(page, product: dict, max_reviews: int = 5
     return all_reviews
 
 
-def scrape_url(context, url: str, max_reviews: int = 500) -> dict:
+def scrape_url(context, url: str, max_reviews: int = 500, target_ratings: set = None) -> dict:
     """Scrape a single URL with retry logic."""
     start_time = time.time()
     result = {"product": None, "reviews": [], "error": None}
@@ -338,12 +374,16 @@ def scrape_url(context, url: str, max_reviews: int = 500) -> dict:
                 time.sleep(1)
                 
                 # Step 3: Scrape all reviews with pagination
-                reviews = scrape_all_reviews_with_pagination(page, product, max_reviews)
+                reviews = scrape_all_reviews_with_pagination(
+                    page, product, max_reviews, target_ratings=target_ratings
+                )
                 result["reviews"] = reviews
             else:
                 # Fallback: extract from current page
                 seen_ids = set()
-                reviews = extract_reviews_from_page(page, product, seen_ids)
+                reviews = extract_reviews_from_page(
+                    page, product, seen_ids, target_ratings=target_ratings
+                )
                 result["reviews"] = reviews
             
             elapsed = time.time() - start_time
@@ -367,12 +407,15 @@ def scrape_url(context, url: str, max_reviews: int = 500) -> dict:
     return result
 
 
-def run_scraper(urls: list, max_reviews: int = 500) -> dict:
+def run_scraper(urls: list, max_reviews: int = 500, target_ratings: list = None) -> dict:
     """Main scraper function."""
     results = {"products": [], "reviews": [], "errors": []}
+    rating_filter = set(target_ratings) if target_ratings else None
     
     print(f"🚀 Starting browser scraper for {len(urls)} URLs", file=sys.stderr)
     print(f"📊 Max reviews per product: {max_reviews}", file=sys.stderr)
+    if rating_filter:
+        print(f"🎯 Target ratings filter: {sorted(rating_filter)}", file=sys.stderr)
     
     with sync_playwright() as p:
         browser = p.chromium.launch(
@@ -394,7 +437,7 @@ def run_scraper(urls: list, max_reviews: int = 500) -> dict:
             print(f"{'='*50}", file=sys.stderr)
             
             # Pass context - scrape_url creates fresh page per attempt
-            result = scrape_url(context, url, max_reviews)
+            result = scrape_url(context, url, max_reviews, target_ratings=rating_filter)
             
             if result["product"]:
                 results["products"].append(result["product"])
@@ -418,10 +461,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tokopedia Review Scraper")
     parser.add_argument("--urls", type=str, required=True, help="JSON array of URLs")
     parser.add_argument("--max-reviews", type=int, default=500, help="Max reviews per product")
+    parser.add_argument(
+        "--target-ratings",
+        type=str,
+        default="",
+        help="Comma-separated ratings filter, e.g. '1,2,3'",
+    )
     
     args = parser.parse_args()
     
     urls = json.loads(args.urls)
-    results = run_scraper(urls, max_reviews=args.max_reviews)
+    target_ratings = []
+    if args.target_ratings.strip():
+        target_ratings = [int(x.strip()) for x in args.target_ratings.split(",") if x.strip()]
+
+    results = run_scraper(urls, max_reviews=args.max_reviews, target_ratings=target_ratings)
     
     print(json.dumps(results, ensure_ascii=False))

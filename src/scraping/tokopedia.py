@@ -298,20 +298,44 @@ class TokopediaScraper:
                         reviewer_name = text
                         break
             
-            # Rating (count stars or find rating number)
-            rating = 5  # Default
-            rating_elem = await elem.query_selector('[data-testid*="rating"], [class*="rating"], [class*="star"]')
-            if rating_elem:
-                # Try to find rating number
-                rating_text = (await rating_elem.get_attribute('aria-label')) or (await rating_elem.inner_text())
-                match = re.search(r'(\d)', rating_text or '')
-                if match:
-                    rating = int(match.group(1))
-                else:
-                    # Count filled stars
-                    stars = await elem.query_selector_all('[class*="star-filled"], [class*="starFilled"]')
-                    if stars:
-                        rating = len(stars)
+            # Rating: never default to 5. If extraction fails, skip the review.
+            rating: Optional[int] = None
+            rating_candidates = [
+                '[data-testid="icnStarScore"]',
+                '[data-testid*="rating"]',
+                '[aria-label*="bintang" i]',
+                '[aria-label*="star" i]',
+                '[class*="rating"]',
+            ]
+
+            for sel in rating_candidates:
+                rating_elems = await elem.query_selector_all(sel)
+                if not rating_elems:
+                    continue
+
+                # Strongest signal: explicit star icons
+                if sel == '[data-testid="icnStarScore"]':
+                    star_count = len(rating_elems)
+                    if 1 <= star_count <= 5:
+                        rating = star_count
+                        break
+
+                # Fallback: parse numeric text/aria label from candidate nodes
+                for node in rating_elems:
+                    aria = (await node.get_attribute('aria-label')) or ''
+                    txt = (await node.inner_text()) or ''
+                    combined = f"{aria} {txt}".strip()
+                    if not combined:
+                        continue
+                    m = re.search(r'(\d+)', combined)
+                    if not m:
+                        continue
+                    val = int(m.group(1))
+                    if 1 <= val <= 5:
+                        rating = val
+                        break
+                if rating is not None:
+                    break
             
             # Review text
             review_text = ""
@@ -331,6 +355,9 @@ class TokopediaScraper:
                         review_text = text
                         break
             
+            if rating is None:
+                return None
+
             if not review_text:
                 return None
             
