@@ -15,7 +15,7 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     """Drop duplicate rows by review_id."""
     before = len(df)
     df = df.drop_duplicates(subset=["review_id"]).reset_index(drop=True)
-    print(f"  [dedupe]    {before:>5} → {len(df):>5}  (removed {before - len(df)})")
+    print(f"  [dedupe]    {before:>5} -> {len(df):>5}  (removed {before - len(df)})")
     return df
 
 
@@ -25,7 +25,7 @@ def drop_empty_reviews(df: pd.DataFrame, min_chars: int = 1) -> pd.DataFrame:
     df = df[df["review_text"].notna()]
     df = df[df["review_text"].str.strip().str.len() >= min_chars]
     df = df.reset_index(drop=True)
-    print(f"  [empty/short] {before:>5} → {len(df):>5}  (removed {before - len(df)}, min_chars={min_chars})")
+    print(f"  [empty/short] {before:>5} -> {len(df):>5}  (removed {before - len(df)}, min_chars={min_chars})")
     return df
 
 
@@ -35,7 +35,7 @@ def filter_valid_ratings(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df["rating"].notna()]
     df = df[df["rating"].astype(float).between(1, 5)]
     df = df.reset_index(drop=True)
-    print(f"  [rating]    {before:>5} → {len(df):>5}  (removed {before - len(df)})")
+    print(f"  [rating]    {before:>5} -> {len(df):>5}  (removed {before - len(df)})")
     return df
 
 
@@ -49,10 +49,10 @@ def clean_variant(df: pd.DataFrame) -> pd.DataFrame:
 
 def add_sentiment_label(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Map numeric rating → sentiment_label.
-      4-5  → Positif
-      3    → Netral
-      1-2  → Negatif
+    Map numeric rating -> sentiment_label.
+      4-5  -> Positif
+      3    -> Netral
+      1-2  -> Negatif
     """
     def _map(r):
         r = int(float(r))
@@ -85,8 +85,8 @@ _WS_RE      = re.compile(r"\s+")
 def clean_text(text: str) -> str:
     """
     Pipeline:
-      lowercase → strip URL/mention/hashtag →
-      remove non-alphanumeric → normalise whitespace
+      lowercase -> strip URL/mention/hashtag ->
+      remove non-alphanumeric -> normalise whitespace
     """
     if not isinstance(text, str):
         return ""
@@ -111,7 +111,7 @@ def apply_text_cleaning(df: pd.DataFrame, min_words: int = 1) -> pd.DataFrame:
 
     before = len(df)
     df = df[df["text_length"] >= min_words].reset_index(drop=True)
-    print(f"  [text_len]  {before:>5} → {len(df):>5}  (removed {before - len(df)}, min_words={min_words})")
+    print(f"  [text_len]  {before:>5} -> {len(df):>5}  (removed {before - len(df)}, min_words={min_words})")
     return df
 
 
@@ -121,7 +121,7 @@ def apply_text_cleaning(df: pd.DataFrame, min_words: int = 1) -> pd.DataFrame:
 
 def apply_stemming(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Apply PySastrawi stemmer to `review_text_clean` → `review_text_stemmed`.
+    Apply PySastrawi stemmer to `review_text_clean` -> `review_text_stemmed`.
     Only use when PySastrawi is installed. Safe to skip for LIME/SHAP since
     human-readable tokens are preferred there.
     """
@@ -162,7 +162,7 @@ def undersample_majority(
         .reset_index(drop=True)
     )
     print(
-        f"  [undersample] {majority_label}: {len(df_maj)} → {n_actual}  "
+        f"  [undersample] {majority_label}: {len(df_maj)} -> {n_actual}  "
         f"| minority kept: {len(df_min)}  "
         f"| total: {len(result)}"
     )
@@ -171,7 +171,7 @@ def undersample_majority(
 
 def add_binary_label(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Add a `binary_label` column pooling Negatif + Netral → 'Non-Positif'.
+    Add a `binary_label` column pooling Negatif + Netral -> 'Non-Positif'.
     Original `sentiment_label` (3-class) is preserved.
     """
     df = df.copy()
@@ -231,7 +231,7 @@ def run_cleaning_pipeline(input_path: str, output_path: str,
     print(f"Final   : {len(df)} rows  |  {df.shape[1]} columns")
 
     df.to_csv(output_path, index=False, encoding="utf-8")
-    print(f"Saved → {output_path}")
+    print(f"Saved -> {output_path}")
     print("=" * 50)
 
     return df
