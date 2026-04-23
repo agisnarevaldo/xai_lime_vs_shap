@@ -67,7 +67,8 @@ test-results/
 .env.local
 *.env
 
-# Output files
-outputs/
-*.pkl
-*.model
+# Large Output Files (Models)
+outputs/**/*.safetensors
+outputs/**/*.bin
+outputs/**/*.pth
+outputs/**/*.onnx
