@@ -1,0 +1,16 @@
+Sample_ID,True_Label,Pred_Label,Jaccard_Similarity,Top_LIME,Top_SHAP
+0,happy,happy,0.5,"sesuai, pesanan, barang","sesuai, pesanan, "
+1,happy,happy,1.0,"tapi, lumayan, aplikasinya, atau, kelihatan","aplikasinya, atau, lumayan, tapi, kelihatan"
+2,happy,love,0.25,"videografi, fotografi, dikecewakan, senang, pernah","fotografi, video, senang, pokoknya, belanja"
+3,love,love,0.42857142857142855,"bangett, suka, recommended, banget, sihhh","recommended, langganan, bakalan, banget, suka"
+4,love,love,0.6,"recommended, terjangkau, kualitas","recommended, terjangkau, harga, bagus, kualitas"
+5,love,happy,0.8,"gampang, dibawa, bawa, ukurannya","gampang, dibawa, imut, bawa, ukurannya"
+6,anger,anger,1.0,buruk,buruk
+7,anger,anger,0.6666666666666666,"jelek, brp, rusak, kualitasnya, baru","rusak, jelek, brp, bahannya, kualitasnya"
+8,anger,fear,0.3333333333333333,"kapok, disini, beli","disini, kap, beli, ok, "
+9,fear,fear,0.1111111111111111,"hati2, adalah, ada, ternyata, di","berbeda, hati, 2, yg, ternyata"
+10,fear,fear,0.6666666666666666,"dan, po, balas, chat, blm","balas, dan, chat, po, kan"
+11,fear,sadness,0.1111111111111111,"tdk, batrenya, cuma, lama, 1500mah","tdk, bat, alias, ren, plus"
+12,sadness,sadness,0.1111111111111111,"mengecewakan, pesenan, rusak, padahal, nya","pesen, mengecewakan, kado, an, buat"
+13,sadness,sadness,1.0,"mengecewakan, sangat, proses","mengecewakan, proses, sangat"
+14,sadness,love,0.25,"recomended, surprise, ultah, ini, buat","ini, recom, ultah, banget, moment"

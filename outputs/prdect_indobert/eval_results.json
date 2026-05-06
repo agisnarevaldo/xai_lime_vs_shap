@@ -1,0 +1,17 @@
+{
+  "model": "indobenchmark/indobert-base-p1",
+  "dataset": "PRDECT-ID",
+  "n_classes": 5,
+  "class_names": [
+    "happy",
+    "love",
+    "anger",
+    "fear",
+    "sadness"
+  ],
+  "train_size": 4319,
+  "test_size": 1080,
+  "f1_macro": 0.6327,
+  "augmentation": "none",
+  "epochs": 30
+}
