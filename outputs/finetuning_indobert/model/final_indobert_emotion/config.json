@@ -6,7 +6,7 @@
   ],
   "attention_probs_dropout_prob": 0.1,
   "bos_token_id": null,
-  "classifier_dropout": null,
+  "classifier_dropout": 0.3,
   "decoder_start_token_id": null,
   "directionality": "bidi",
   "dtype": "float32",
