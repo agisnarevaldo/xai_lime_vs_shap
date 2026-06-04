@@ -1,23 +1,20 @@
 review_text,true_labels,pred_labels,confidence,true_emotion,pred_emotion
-kaget pas dateng ternyata bahannya bagus kualitasnya bagus padahal harganya murah wk,1,0,0.9398986101150513,positive,negative
-"sudah 2 tahun berlangganan memakai cat sablon ini.hasil ajib,seller nya juga ajib",1,0,0.5633444786071777,positive,negative
-berfungsi tapi sayangnya penyok,1,0,0.9441280364990234,positive,negative
-barang diterima dengan baik. tapi sayang baterenya uda soak,0,1,0.9424705505371094,negative,positive
-"hampir sempurna, packing nya doang yang kurang aman dari benturan",1,0,0.8654349446296692,positive,negative
-"besar sekali ukurannya, jadi tidak kepake longgar pas saya pakai",1,0,0.929141640663147,positive,negative
-"kesel ama durasi pengirimannya doang, overall barangnya bagus kok",1,0,0.9293351173400879,positive,negative
-material produk bagus. ukuran produk sesuai. warna produk sesuai.tapi sayang karetnya kurang baik karena masih bocor saat test simpan air,0,1,0.9454126358032227,negative,positive
-"pengiriman telat sehari, tapi barangnya bagus",1,0,0.5964947938919067,positive,negative
-"pakai lem ini hati . pastikan penataannya balon sebelum dipasang, kalau nda tidak bisa dicabut. bisa dicabut tapi resiko pecah. mantul tingkat kerekatannya.",1,0,0.9438292384147644,positive,negative
-"klaim produk order ditanggapi dg cepat, dan diganti sesuai dg kualitas yang baik.",1,0,0.6731076240539551,positive,negative
-driver ngaco bukan tokonya. barang ok. itu smart namanya bengak. saya kasih puas komen jg kamu bintang satunya buat driver.,0,1,0.8378069996833801,negative,positive
-bintang yang berbicara,1,0,0.8953557014465332,positive,negative
-"ini pembelian saya yang kedua kali, pada saat saya terima kondisi segel sudah terbuka dan kartu garansi beda dengan 2 unit yang saya sebelumnya meskipun garansi resmi indonesia dan unit ip cameranya berbahasa indonesia serta kondisi unit bisa dinyalakan. saran saja sebelum barang dikirim disampaikan saja kondisinya supaya lebih transparan.",1,0,0.8495295643806458,positive,negative
-ini cookies terenak dimulutku?,1,0,0.9346591830253601,positive,negative
-"belanja dari official store, kondisi barang diterima seperti sampah dan barang rongsokan. terima kasih.",0,1,0.9283784031867981,negative,positive
-"product ok lah , tapi sayang ada beberapa sachet nya yang sobek , jadi di dalam nya beraktakan gel",0,1,0.6850026845932007,negative,positive
-respon cepat packing rapih kecewa 2 lubang teflonnya ngelupas,0,1,0.947201132774353,negative,positive
-"barang ok, pengiriman lamaa, konfirmasi saja butuh 2 hari, packing tidak banget, tidak pakai buble",1,0,0.8052126169204712,positive,negative
-"pesen 2 lapis, dikasih selapis, untung saja visornya aman, amsyong",0,1,0.7838016748428345,negative,positive
-"bukunya sesuai, pengiriman cepat namun diletakkan begitu saja di lantai tanpa pemberitahuan komunikasi dari kurir jika barang mau diletakkan dititipkan, ada defect minor pada buku, tolong tingkatkan lagi kualitas packaging dan koordinasi dengan kurir",1,0,0.7210575342178345,positive,negative
-"barangnya datang sesuai dengan pesan dan estimasi waktunya pas banget mantap, cuman sayang speaker sebelah kiri tidak berfungsi, yang bersuara hnya sbelah kanan",0,1,0.9393094182014465,negative,positive
+"pengiriman oke, jahitannya oke, cuma pas dapet yang kancingnya rusak.",0,1,0.8903179168701172,negative,positive
+gasuka warnanya,0,1,0.7578995227813721,negative,positive
+"barusan saya tes untuk ambil sampah di sungai dekat rumah, untuk kekuatan daya cekram si alatnya masuk akal untuk harga segini. untuk ambil plastik mudah, tapi untuk ambil sampah kain atau sampah yang udah kekubur agak sulit karena kurang kuat cekramannya",1,0,0.8642269372940063,positive,negative
+ini cookies terenak dimulutku?,1,0,0.8529097437858582,positive,negative
+"lumayan, sebagai pengguna baru cuman bayar ongkir 6 ribu pengiriman cepet, kualitas harga untuk hp oke asal tidak ada angin kenceng, soalnya materialnya harga nya untuk dslr tidak rekomen",0,1,0.9463229179382324,negative,positive
+"untuk respon penjual bagus, tapi kondisi barang biasa saja bahkan agak rusak bagian tombol dan kadang mati sendiri saat menjalankan game",0,1,0.6215512752532959,negative,positive
+"sudah 2 tahun berlangganan memakai cat sablon ini.hasil ajib,seller nya juga ajib",1,0,0.7471815943717957,positive,negative
+"pengiriman lambat, tidak sesuai jadwal, tetapi puas.",1,0,0.939094066619873,positive,negative
+"pakai lem ini hati . pastikan penataannya balon sebelum dipasang, kalau nda tidak bisa dicabut. bisa dicabut tapi resiko pecah. mantul tingkat kerekatannya.",1,0,0.9381881952285767,positive,negative
+"well.10 hari baru sampe, fix pesanan terlama di tokped saya, sobek pula bungkusnya.ok thanks sampai dsini",0,1,0.6100907325744629,negative,positive
+"sablonnya pudar dan tipis bahannya tipis,but worth it for the price",1,0,0.9160879254341125,positive,negative
+"isi buku bagus, saya beli sekalian minta disampul. tetapi halaman halaman banyak yang menyatu, harus kita potong dengan cutter atau pisau secara manual. sebenarnya saya tidak masalah tetapi saran saya sebaiknya seller memeriksa kembali barang sebelum dikirimkan dan memberitahu apabila ada kecacatan. kemudian bila ada konsumen yang chat setelah barang sampai jangan cuman diread saja. semoga bisa jadi bahan intropeksi dan membuat tokonya lebih maju",1,0,0.70817631483078,positive,negative
+"barang cepat sampai, tapi ad sedikit keteken kardus hpnya. semoga tidak kenapa hpnya",1,0,0.7930291891098022,positive,negative
+secara keseluruhan sudah bagus namun bagian dalam kadang suka copot copot,1,0,0.6646650433540344,positive,negative
+driver ngaco bukan tokonya. barang ok. itu smart namanya bengak. saya kasih puas komen jg kamu bintang satunya buat driver.,0,1,0.7291344404220581,negative,positive
+"pembelian kedua, sayang kabel tidak sesuai, jadi beli kabel dulu. tapi produk masih ok, berfungsi dengan baik. terima kasih.",1,0,0.5351837277412415,positive,negative
+"beli 2 beda warna, tapi sama sis nya dikirim warna yang sama. udah terlanjur dipack sama sis nya, diganti ovo lho ke saya. padahal saya terima 2 barang. tanggung jawab sekalii. celana sesuai deskripsi.",1,0,0.9467648267745972,positive,negative
+"barang sudah sampai tujuan , hanya saja sebelum dikirim mohon perhatikan barangnya terlebih dahulu.",0,1,0.670710563659668,negative,positive
+"belanja dari official store, kondisi barang diterima seperti sampah dan barang rongsokan. terima kasih.",0,1,0.8725829124450684,negative,positive
