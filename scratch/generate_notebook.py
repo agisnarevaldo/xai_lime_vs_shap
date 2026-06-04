@@ -123,11 +123,18 @@ def create_notebook():
                     "\n",
                     "df_test = pd.read_csv(TEST_DATA_PATH)\n",
                     "df_train = pd.read_csv(TRAIN_DATA_PATH)\n",
-                    "print(f\"Jumlah data test: {len(df_test)}\")\n",
-                    "print(f\"Jumlah data train: {len(df_train)}\")\n",
+                    "print(f\"Jumlah data test awal: {len(df_test)}\")\n",
+                    "print(f\"Jumlah data train awal: {len(df_train)}\")\n",
+                    "\n",
+                    "# Filter review yang terlalu pendek (minimal 3 kata) agar tidak menyebabkan error pada clustering SHAP\n",
+                    "df_test = df_test[df_test[\"review_text_clean\"].astype(str).apply(lambda x: len(x.split())) >= 3].reset_index(drop=True)\n",
+                    "df_train = df_train[df_train[\"review_text_clean\"].astype(str).apply(lambda x: len(x.split())) >= 3].reset_index(drop=True)\n",
+                    "print(f\"Jumlah data test setelah filter (min 3 kata): {len(df_test)}\")\n",
+                    "print(f\"Jumlah data train setelah filter (min 3 kata): {len(df_train)}\")\n",
                     "\n",
                     "# Definisi kelas sentimen biner\n",
                     "CLASS_NAMES = [\"Negatif\", \"Positif\"]"
+
                 ]
             },
             {
