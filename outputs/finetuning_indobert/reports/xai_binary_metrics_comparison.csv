@@ -1,0 +1,6 @@
+Metric,Value
+Avg_Jaccard_Similarity,0.6020634920634921
+Avg_Execution_Time_Lime,0.5885624766349793
+Avg_Execution_Time_Shap,0.399108452796936
+Comprehensiveness_AOPC_Lime_k5,0.02607779949903488
+Comprehensiveness_AOPC_Shap_k5,0.031799107789993286
