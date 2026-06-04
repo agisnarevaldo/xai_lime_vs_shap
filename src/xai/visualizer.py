@@ -51,7 +51,6 @@ def plot_local_comparison(lime_feats, shap_feats, sample_id, true_label, pred_la
     plt.tight_layout()
     
     if save_path:
-        # Create directory if it doesn't exist
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         print(f"Saved local comparison plot to: {save_path}")
@@ -95,28 +94,68 @@ def plot_metric_distributions(jaccard_scores, runtimes_lime, runtimes_shap, save
         
     plt.close()
 
-def plot_aopc_curves(k_values, aopc_lime, aopc_shap, save_path=None):
+def plot_faithfulness_curves(k_values, comp_lime, comp_shap, suff_lime, suff_shap, save_path=None):
     """
-    Plots the Area Over Perturbation Curve (Comprehensiveness) comparison.
-    A higher AOPC indicates a more faithful explainer (faster prediction drop).
+    Plots the Comprehensiveness and Sufficiency curves side-by-side (1x2 subplot).
     """
-    plt.figure(figsize=(8, 5))
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     
-    plt.plot(k_values, aopc_lime, marker='o', linewidth=2, color='#9bbb59', label='LIME (Comprehensiveness)')
-    plt.plot(k_values, aopc_shap, marker='s', linewidth=2, color='#c0504d', label='SHAP (Comprehensiveness)')
+    # 1. Comprehensiveness Plot
+    axes[0].plot(k_values, comp_lime, marker='o', linewidth=2, color='#9bbb59', label='LIME')
+    axes[0].plot(k_values, comp_shap, marker='s', linewidth=2, color='#c0504d', label='SHAP')
+    axes[0].set_title("Comprehensiveness (AOPC) - Deletion (Higher is Better)")
+    axes[0].set_xlabel("Number of Deleted Tokens (k)")
+    axes[0].set_ylabel("Drop in True Class Probability")
+    axes[0].set_xticks(k_values)
+    axes[0].legend()
+    axes[0].grid(True, linestyle=':', alpha=0.6)
     
-    plt.title("Comprehensiveness (AOPC) Curves - Deletion Method")
-    plt.xlabel("Number of Deleted Tokens (k)")
-    plt.ylabel("Drop in Prediction Probability")
-    plt.xticks(k_values)
-    plt.legend()
-    plt.grid(True, linestyle=':', alpha=0.6)
+    # 2. Sufficiency Plot
+    axes[1].plot(k_values, suff_lime, marker='o', linewidth=2, color='#9bbb59', label='LIME')
+    axes[1].plot(k_values, suff_shap, marker='s', linewidth=2, color='#c0504d', label='SHAP')
+    axes[1].set_title("Sufficiency - Preservation (Lower is Better)")
+    axes[1].set_xlabel("Number of Kept Tokens (k)")
+    axes[1].set_ylabel("Drop in True Class Probability")
+    axes[1].set_xticks(k_values)
+    axes[1].legend()
+    axes[1].grid(True, linestyle=':', alpha=0.6)
     
+    fig.suptitle("XAI Faithfulness Evaluation - Comprehensiveness vs Sufficiency", y=1.02)
     plt.tight_layout()
     
     if save_path:
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"Saved AOPC curves plot to: {save_path}")
+        print(f"Saved faithfulness curves to: {save_path}")
+        
+    plt.close()
+
+def plot_global_shap_importance(top_pos_words, top_neg_words, save_path=None):
+    """
+    Plots the top 10 positive and top 10 negative words based on mean absolute SHAP values.
+    """
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    
+    # 1. Positive words plot (pushes towards Positif class)
+    words_pos = [item[0] for item in top_pos_words][::-1]
+    weights_pos = [item[1] for item in top_pos_words][::-1]
+    axes[0].barh(words_pos, weights_pos, color='#3182bd', edgecolor='grey', height=0.6)
+    axes[0].set_title("Top 10 Kata Pendorong Sentimen Positif")
+    axes[0].set_xlabel("Mean Absolute SHAP Value")
+    
+    # 2. Negative words plot (pushes towards Negatif class)
+    words_neg = [item[0] for item in top_neg_words][::-1]
+    weights_neg = [item[1] for item in top_neg_words][::-1]
+    axes[1].barh(words_neg, weights_neg, color='#de2d26', edgecolor='grey', height=0.6)
+    axes[1].set_title("Top 10 Kata Pendorong Sentimen Negatif")
+    axes[1].set_xlabel("Mean Absolute SHAP Value")
+    
+    fig.suptitle("Global SHAP Feature Importance - Model Sentimen IndoBERT", y=1.02)
+    plt.tight_layout()
+    
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        print(f"Saved global SHAP plot to: {save_path}")
         
     plt.close()
