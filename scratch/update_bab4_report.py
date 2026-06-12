@@ -1,4 +1,9 @@
-# BAB 4 HASIL DAN PEMBAHASAN
+import os
+from pathlib import Path
+
+report_path = Path("outputs/reports/BAB_4_Hasil_dan_Pembahasan.md")
+
+bab4_content = """# BAB 4 HASIL DAN PEMBAHASAN
 
 ## 4.1 Dataset Penelitian
 
@@ -129,3 +134,10 @@ Hasil evaluasi kuantitatif dirangkum pada Tabel 4.5 berikut:
 | **Average Runtime (detik)** | **0.6234** | **0.4050** | **SHAP Lebih Efisien**: SHAP Partition lebih cepat 35% dibandingkan LIME karena memanfaatkan struktur clustering hirarkis kalimat. |
 | **Comprehensiveness (AOPC) ($k=5$)** | **0.0280** | **0.0318** | **SHAP Lebih Faithful**: Penghapusan top-5 kata penting SHAP menurunkan probabilitas prediksi model lebih signifikan. |
 | **Sufficiency ($k=5$)** | **0.0029** | **0.0066** | **Kedua Metode Sangat Valid**: Nilai yang sangat mendekati 0 membuktikan retensi informasi pada top-5 kata kunci sudah cukup mempertahankan prediksi model asli. |
+"""
+
+os.makedirs(report_path.parent, exist_ok=True)
+with open(report_path, "w", encoding="utf-8") as f:
+    f.write(bab4_content)
+
+print(f"Report {report_path} successfully updated!")

@@ -72,3 +72,9 @@ outputs/**/*.safetensors
 outputs/**/*.bin
 outputs/**/*.pth
 outputs/**/*.onnx
+outputs/finetuning_indobert/reports/xai_binary_metrics_comparison.gsheet
+outputs/finetuning_indobert/reports/xai_binary_metrics_comparison.csv
+
+# Google Drive shortcuts
+*.gsheet
+

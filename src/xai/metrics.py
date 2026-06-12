@@ -3,10 +3,26 @@ import numpy as np
 from scipy.stats import spearmanr
 
 def clean_token(token):
-    """Helper to clean and normalize a text token."""
+    """Helper to clean and normalize a text token, ignoring standalone punctuation and grammar stopwords."""
     if not isinstance(token, str):
         return ""
-    return token.strip().lower()
+    tok = token.strip().lower()
+    # 1. Filter out standalone punctuation (tokens without any alphanumeric characters)
+    if tok and not any(c.isalnum() for c in tok):
+        return ""
+    # 2. Filter out functional Indonesian grammar stopwords (excludes critical negation/contrastive words)
+    XAI_STOPWORDS = {
+        "dan", "di", "yang", "sudah", "dengan", "ada", "ke", "dari", "ini", "itu",
+        "saya", "kamu", "dia", "mereka", "kita", "kami", "untuk", "akan", "telah",
+        "oleh", "pada", "adalah", "bahwa", "saja", "juga", "atau", "sebagai", "dalam",
+        "saat", "karena", "tersebut", "tentang", "serta", "yaitu", "seperti", "telah",
+        "bagi", "secara", "hanya", "ia", "sih", "kah", "pun", "deh", "kok", "lah", "tuh"
+    }
+    if tok in XAI_STOPWORDS:
+        return ""
+    return tok
+
+
 
 def extract_lime_features(lime_exp, label_idx, top_k=5):
     """
